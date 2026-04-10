@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Table, Button, Space, Card, Tag } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import api from '../api/axios';
+import api from '../../api/axios';
 
 export default function WarehouseList() {
   const [data, setData] = useState<any[]>([]);

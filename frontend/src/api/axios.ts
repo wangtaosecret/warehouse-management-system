@@ -2,7 +2,7 @@ import axios from 'axios';
 import { useAuthStore } from '../stores/authStore';
 
 const api = axios.create({
-  baseURL: '/api',
+  baseURL: 'https://warehouse-api-production.wangtaosecret.workers.dev',
   timeout: 30000,
 });
 

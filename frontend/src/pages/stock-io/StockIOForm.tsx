@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { Card, Form, Select, Input, DatePicker, Button, message, Table } from 'antd';
+import { Card, Form, Select, Input, DatePicker, Button, message, Table, Space } from 'antd';
 import { PlusOutlined } from '@ant-design/icons';
 
 const { Option } = Select;

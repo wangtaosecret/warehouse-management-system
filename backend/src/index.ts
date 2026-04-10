@@ -1,5 +1,5 @@
 import { Hono } from 'hono';
-import { cors } from './middleware/cors';
+import { corsMiddleware } from './middleware/cors';
 import auth from './routes/auth';
 import orgs from './routes/orgs';
 import users from './routes/users';
@@ -13,7 +13,7 @@ import suppliers from './routes/suppliers';
 const app = new Hono<{ Bindings: { DB: any } }>();
 
 // Middleware
-app.use('/*', cors);
+app.use('/*', corsMiddleware);
 
 // Health check
 app.get('/', (c) => {

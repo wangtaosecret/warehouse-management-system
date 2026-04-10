@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
-import { Table, Button, Space, Tag, Modal, message, Card, Input, Form, Row, Col } from 'antd';
+import { Table, Button, Space, Tag, Modal, message, Card, Input, Form, Row, Col, Select } from 'antd';
 import { PlusOutlined, EditOutlined, DeleteOutlined } from '@ant-design/icons';
-import api from '../api/axios';
+import api from '../../api/axios';
 
 export default function CategoryList() {
   const [data, setData] = useState<any[]>([]);

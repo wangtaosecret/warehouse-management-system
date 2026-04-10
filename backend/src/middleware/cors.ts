@@ -1,10 +1,7 @@
-import { cors as honoCors } from 'hono/cors';
+import { cors } from 'hono/cors';
 
-export const cors = honoCors({
-  origin: '*',  // In production, specify exact origins
+export const corsMiddleware = cors({
+  origin: '*',
   allowMethods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowHeaders: ['Content-Type', 'Authorization', 'X-Requested-With'],
-  exposeHeaders: ['Content-Length'],
-  maxAge: 86400,
-  credentials: true,
 });

@@ -1,11 +1,9 @@
 name = "warehouse-api"
 main = "src/index.ts"
-compatibility_date = "2024-01-01"
+compatibility_date = "2024-09-23"
+compatibility_flags = ["nodejs_compat"]
 
 [env.production]
 d1_databases = [
-  { binding = "DB", database_name = "warehouse-db", database_id = "your-database-id" }
-]
-r2_buckets = [
-  { binding = "ASSETS", bucket_name = "warehouse-assets" }
+  { binding = "DB", database_name = "warehouse-db", database_id = "06a16252-ff0a-4732-b7fe-26b4c30ed2ee" }
 ]

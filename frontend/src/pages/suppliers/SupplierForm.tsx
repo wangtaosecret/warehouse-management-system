@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import { Card, Form, Input, Select, Button, message } from 'antd';
-import api from '../api/axios';
+import { Card, Form, Input, Select, Button, message, Space } from 'antd';
+import api from '../../api/axios';
 
 const { Option } = Select;
 
