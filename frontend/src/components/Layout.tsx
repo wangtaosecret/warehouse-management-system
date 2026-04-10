@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout as AntLayout, Menu, Avatar, Dropdown, theme } from 'antd';
+import { Layout as AntLayout, Menu, Avatar, Dropdown, theme, MenuProps } from 'antd';
 import {
   DashboardOutlined,
   AppstoreOutlined,
@@ -19,7 +19,7 @@ import { useAuthStore } from '../stores/authStore';
 
 const { Header, Sider, Content } = AntLayout;
 
-const menuItems = [
+const menuItems: MenuProps['items'] = [
   { key: '/dashboard', icon: <DashboardOutlined />, label: '首页' },
   { key: '/products', icon: <AppstoreOutlined />, label: '商品管理' },
   { key: '/categories', icon: <TagsOutlined />, label: '商品分类' },
@@ -40,7 +40,7 @@ export default function Layout() {
   const { user, logout } = useAuthStore();
   const { token } = theme.useToken();
 
-  const handleMenuClick = ({ key }: { key: string }) => {
+  const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
     navigate(key);
   };
 
@@ -49,7 +49,7 @@ export default function Layout() {
     navigate('/login');
   };
 
-  const userMenuItems = [
+  const userMenuItems: MenuProps['items'] = [
     { key: 'profile', icon: <UserOutlined />, label: user?.name || '用户' },
     { type: 'divider' },
     { key: 'logout', icon: <LogoutOutlined />, label: '退出登录', onClick: handleLogout },

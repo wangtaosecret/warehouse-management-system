@@ -1,8 +1,7 @@
 import { Hono } from 'hono';
-import { getCookie, setCookie, deleteCookie } from 'hono/cookie';
+import { generateId, now, parseJSON } from '../db/d1';
 import { generateToken, verifyToken } from '../utils/jwt';
 import { hashPassword, verifyPassword } from '../utils/password';
-import { generateId, now } from '../db/d1';
 import { authMiddleware, getUser, AuthVariables } from '../middleware/auth';
 
 const auth = new Hono<{ Bindings: { DB: any }; Variables: AuthVariables }>();
@@ -12,20 +11,45 @@ auth.post('/login', async (c) => {
   const { username, password } = await c.req.json();
   
   if (!username || !password) {
-    return c.json({ success: false, error: 'Username and password required' }, 400);
+    return c.json({ success: false, error: '用户名和密码不能为空' }, 400);
   }
 
   const db = c.env.DB;
   
-  // For demo, check if user exists (in real app, query database)
-  // Since we don't have real DB initialization here, simulate login
-  if (username === 'admin' && password === 'admin123') {
+  try {
+    // Query user from database
+    const user = await db.prepare(`
+      SELECT u.*, r.permissions as role_permissions
+      FROM user u
+      LEFT JOIN role r ON JSON_EACH(u.role_ids) = r.id
+      WHERE u.username = ? AND u.status = 'enabled'
+    `).bind(username).first();
+    
+    // Try simpler query first
+    const userResult = await db.prepare(`
+      SELECT * FROM user WHERE username = ? AND status = 'enabled'
+    `).bind(username).first();
+    
+    if (!userResult) {
+      return c.json({ success: false, error: '用户名或密码错误' }, 401);
+    }
+    
+    // Verify password
+    const valid = await verifyPassword(password, userResult.password_hash);
+    if (!valid) {
+      return c.json({ success: false, error: '用户名或密码错误' }, 401);
+    }
+    
+    // Parse role_ids
+    const roleIds = parseJSON<string[]>(userResult.role_ids, []);
+    
+    // Generate token
     const token = generateToken({
-      userId: 'admin-id',
-      orgId: 'system',
-      username: 'admin',
-      name: '系统管理员',
-      role_ids: [],
+      userId: userResult.id,
+      orgId: userResult.org_id,
+      username: userResult.username,
+      name: userResult.name,
+      roleIds: roleIds,
     });
     
     return c.json({
@@ -33,38 +57,18 @@ auth.post('/login', async (c) => {
       data: {
         token,
         user: {
-          id: 'admin-id',
-          org_id: 'system',
-          username: 'admin',
-          name: '系统管理员',
-          role_ids: [],
+          id: userResult.id,
+          org_id: userResult.org_id,
+          username: userResult.username,
+          name: userResult.name,
+          role_ids: roleIds,
         }
       }
     });
+  } catch (e: any) {
+    console.error('Login error:', e);
+    return c.json({ success: false, error: '登录失败: ' + e.message }, 500);
   }
-
-  // Demo: allow any login for testing
-  const token = generateToken({
-    userId: 'demo-user-id',
-    orgId: 'demo-org',
-    username,
-    name: username,
-    role_ids: ['admin'],
-  });
-
-  return c.json({
-    success: true,
-    data: {
-      token,
-      user: {
-        id: 'demo-user-id',
-        org_id: 'demo-org',
-        username,
-        name: username,
-        role_ids: ['admin'],
-      }
-    }
-  });
 });
 
 // Logout

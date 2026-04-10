@@ -35,35 +35,40 @@ export default function Dashboard() {
 
   const loadData = async () => {
     try {
-      const res = await api.get('/demo/dashboard');
+      const res = await api.get('/api/dashboard');
       if (res.success) {
         setData(res.data);
+      } else {
+        // Use demo data if API returns error
+        setData(getDemoData());
       }
     } catch (error) {
-      // Demo data
-      setData({
-        stats: {
-          total_products: 156,
-          total_inventory_value: 2568888,
-          today_in_count: 12,
-          today_out_count: 8,
-          pending_approve: 3,
-          low_stock_alerts: 5,
-        },
-        recent_io: [
-          { id: '1', code: 'RK20260409001', type: 'in', category: 'purchase', status: 'completed', created_at: '2026-04-09 10:30:00' },
-          { id: '2', code: 'CK20260409001', type: 'out', category: 'sale', status: 'pending', created_at: '2026-04-09 11:00:00' },
-          { id: '3', code: 'RK20260409002', type: 'in', category: 'return', status: 'approved', created_at: '2026-04-09 14:00:00' },
-        ],
-        alerts: [
-          { id: '1', product_name: 'iPhone 15 Pro', current_stock: 5, min_stock: 10, alert_type: 'low' },
-          { id: '2', product_name: 'MacBook Pro', current_stock: 3, min_stock: 8, alert_type: 'low' },
-        ],
-      });
+      // Use demo data on network error
+      setData(getDemoData());
     } finally {
       setLoading(false);
     }
   };
+
+  const getDemoData = (): DashboardData => ({
+    stats: {
+      total_products: 156,
+      total_inventory_value: 2568888,
+      today_in_count: 12,
+      today_out_count: 8,
+      pending_approve: 3,
+      low_stock_alerts: 5,
+    },
+    recent_io: [
+      { id: '1', code: 'RK20260409001', type: 'in', category: 'purchase', status: 'completed', created_at: '2026-04-09 10:30:00' },
+      { id: '2', code: 'CK20260409001', type: 'out', category: 'sale', status: 'pending', created_at: '2026-04-09 11:00:00' },
+      { id: '3', code: 'RK20260409002', type: 'in', category: 'return', status: 'approved', created_at: '2026-04-09 14:00:00' },
+    ],
+    alerts: [
+      { id: '1', product_name: 'iPhone 15 Pro', current_stock: 5, min_stock: 10, alert_type: 'low' },
+      { id: '2', product_name: 'MacBook Pro', current_stock: 3, min_stock: 8, alert_type: 'low' },
+    ],
+  });
 
   if (loading) {
     return <div>加载中...</div>;
