@@ -1,4 +1,4 @@
-import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import { Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './stores/authStore';
 import Layout from './components/Layout';
 import Login from './pages/Login';
@@ -28,7 +28,7 @@ function PrivateRoute({ children }: PrivateRouteProps) {
   return <>{children}</>;
 }
 
-function AppRoutes() {
+export default function App() {
   return (
     <Routes>
       <Route path="/login" element={<Login />} />
@@ -60,13 +60,5 @@ function AppRoutes() {
       </Route>
       <Route path="*" element={<Navigate to="/" replace />} />
     </Routes>
-  );
-}
-
-export default function App() {
-  return (
-    <BrowserRouter>
-      <AppRoutes />
-    </BrowserRouter>
   );
 }

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { Outlet, useNavigate, useLocation } from 'react-router-dom';
-import { Layout as AntLayout, Menu, Avatar, Dropdown, theme, MenuProps } from 'antd';
+import { Layout as AntLayout, Menu, Avatar, Dropdown, theme, MenuProps, Button, Switch } from 'antd';
 import {
   DashboardOutlined,
   AppstoreOutlined,
@@ -14,8 +14,11 @@ import {
   SettingOutlined,
   UserOutlined,
   LogoutOutlined,
+  SunOutlined,
+  MoonOutlined,
 } from '@ant-design/icons';
 import { useAuthStore } from '../stores/authStore';
+import { useAppStore } from '../stores/appStore';
 
 const { Header, Sider, Content } = AntLayout;
 
@@ -39,6 +42,7 @@ export default function Layout() {
   const location = useLocation();
   const { user, logout } = useAuthStore();
   const { token } = theme.useToken();
+  const { themeMode, toggleTheme } = useAppStore();
 
   const handleMenuClick: MenuProps['onClick'] = ({ key }) => {
     navigate(key);
@@ -55,29 +59,51 @@ export default function Layout() {
     { key: 'logout', icon: <LogoutOutlined />, label: '退出登录', onClick: handleLogout },
   ];
 
+  const isDark = themeMode === 'dark';
+
   return (
     <AntLayout style={{ minHeight: '100vh' }}>
       <Sider
         collapsible
         collapsed={collapsed}
         onCollapse={setCollapsed}
-        theme="dark"
+        theme={isDark ? 'dark' : 'light'}
         style={{ background: token.colorBgContainer }}
       >
         <div className="h-16 flex items-center justify-center text-white text-lg font-bold">
           {collapsed ? 'WMS' : '仓库管理系统'}
         </div>
         <Menu
-          theme="dark"
+          theme={isDark ? 'dark' : 'light'}
           mode="inline"
           selectedKeys={[location.pathname]}
           items={menuItems}
           onClick={handleMenuClick}
-          style={{ background: '#001529' }}
+          style={{ background: isDark ? '#001529' : token.colorBgContainer }}
         />
       </Sider>
       <AntLayout>
-        <Header style={{ padding: '0 24px', background: token.colorBgContainer, display: 'flex', justifyContent: 'flex-end', alignItems: 'center' }}>
+        <Header
+          style={{
+            padding: '0 24px',
+            background: token.colorBgContainer,
+            display: 'flex',
+            justifyContent: 'flex-end',
+            alignItems: 'center',
+            gap: 16,
+          }}
+        >
+          <div className="flex items-center gap-8px">
+            <SunOutlined style={{ color: isDark ? '#888' : '#faad14', fontSize: 16 }} />
+            <Switch
+              size="small"
+              checked={isDark}
+              onChange={toggleTheme}
+              checkedChildren={<MoonOutlined />}
+              unCheckedChildren={<SunOutlined />}
+            />
+            <MoonOutlined style={{ color: isDark ? '#1677ff' : '#888', fontSize: 16 }} />
+          </div>
           <Dropdown menu={{ items: userMenuItems }} placement="bottomRight">
             <div className="flex items-center cursor-pointer">
               <Avatar icon={<UserOutlined />} style={{ marginRight: 8 }} />
@@ -85,7 +111,14 @@ export default function Layout() {
             </div>
           </Dropdown>
         </Header>
-        <Content style={{ margin: '16px', padding: '24px', background: token.colorBgContainer, borderRadius: token.borderRadiusLG }}>
+        <Content
+          style={{
+            margin: '16px',
+            padding: '24px',
+            background: token.colorBgContainer,
+            borderRadius: token.borderRadiusLG,
+          }}
+        >
           <Outlet />
         </Content>
       </AntLayout>
