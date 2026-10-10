@@ -1,0 +1,11 @@
+name: hookpager-test
+on: workflow_dispatch
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - run: exit 1   # intentionally fail to test Hookpager alerts
+      - if: failure()
+        run: |
+          curl -sS -X POST "${{ secrets.HOOKPAGER_URL }}" -H 'Content-Type: application/json' \
+            -d '{"title":"GitHub CI 失败","body":"${{ github.repository }} #${{ github.run_number }}","priority":"high"}'
