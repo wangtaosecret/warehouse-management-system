@@ -8,4 +8,4 @@ jobs:
       - if: failure()
         run: |
           curl -sS -X POST "${{ secrets.HOOKPAGER_URL }}" -H 'Content-Type: application/json' \
-            -d '{"title":"GitHub CI 失败","body":"${{ github.repository }} #${{ github.run_number }}","priority":"high"}'
+            -d '{"title":"GitHub CI failed","body":"${{ github.repository }} #${{ github.run_number }}","priority":"high"}'
