@@ -1,0 +1,13 @@
+name: zz-schedule-probe-oldrepo
+on:
+  schedule:
+    - cron: '*/5 * * * *'
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  probe:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - run: echo "oldrepo probe alive $(date -u +%FT%TZ)"
